@@ -11,8 +11,8 @@ def search(arr, el):
             return 0 + search(arr[:mid], el) 
         else:
             return mid + 1 + search(arr[mid+1:], el)
-    except:
-        return "Not Found"
+    except :
+        return 'Not found'
 
 arr = [1,2,3,4,5,6,7,8,9,10]
-print(search(arr, 6))
+print(search(arr, 0))
