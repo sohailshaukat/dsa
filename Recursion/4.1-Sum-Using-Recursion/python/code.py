@@ -2,7 +2,7 @@
 
 def sum(arr):
     if not len(arr):
-        return 0;
+        return 0
     return arr.pop() + sum(arr)
 
 
