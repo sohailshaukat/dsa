@@ -8,7 +8,7 @@ def search(arr, el):
         if el == guess:
             return mid
         if el < guess:
-            return 0 + search(arr[:mid], el) 
+            return search(arr[:mid], el) 
         else:
             return mid + 1 + search(arr[mid+1:], el)
     except :
