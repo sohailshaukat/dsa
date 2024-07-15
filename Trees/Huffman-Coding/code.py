@@ -51,13 +51,26 @@ count_table = sorted(
     key=lambda el: el["count"],
 )
 
-
 tree = create_tree(count_table)
 table = create_table(tree[0]["chars"], {})
+reverse_table = {table[key]: key for key in table}
 
 substituted_message = "".join([table[char] for char in message])
-print("sus", len(substituted_message))
+print("New Size of message: ", len(substituted_message))
 m_table = "".join([bin(ord(key))[2:].zfill(8) + str(table[key]) for key in table])
-print("pus", len(m_table))
+print("Size of table: ", len(m_table))
 
-final_message = substituted_message + m_table
+
+received_message = deque(substituted_message)
+received_message_in_bytes = []
+
+key = []
+while received_message:
+    key.append(received_message.popleft())
+    if reverse_table.get(''.join(key)):
+        received_message_in_bytes.append(reverse_table[''.join(key)])
+        key = []
+    
+decoded_message = "".join(received_message_in_bytes)
+print("Message received: ", decoded_message)
+print("Is message same?: ", message == decoded_message)
