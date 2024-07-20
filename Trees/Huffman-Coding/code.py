@@ -1,4 +1,6 @@
 from collections import Counter, deque
+import copy
+import graphviz
 
 
 def ordered_insert(table, element, key="count"):
@@ -42,6 +44,50 @@ def stats(message):
     print("Size of message: ", len(message_binary))
 
 
+class Node:
+    def __init__(self, value, left=None, right=None):
+        self.value = value
+        self.left = left
+        self.right = right
+
+
+def grow(node):
+    if node.get("chars"):
+        left = grow(node["chars"][0])
+        right = grow(node["chars"][1])
+
+        return Node(value=node["count"], left=left, right=right)
+
+    return Node(value=node["char"] + ": " + str(node["count"]))
+
+
+def visualize_binary_tree(root):
+    dot = graphviz.Digraph()
+    dot.node(str(root.value))
+
+    def add_nodes_edges(node):
+        if node.left:
+            dot.node(str(node.left.value))
+            dot.edge(str(node.value), str(node.left.value))
+            add_nodes_edges(node.left)
+        if node.right:
+            dot.node(str(node.right.value))
+            dot.edge(str(node.value), str(node.right.value))
+            add_nodes_edges(node.right)
+
+    add_nodes_edges(root)
+    dot.render("binary_tree", view=True, format="png")
+
+
+def draw(tree):
+    duplicate = copy.deepcopy(tree)
+
+    root = duplicate.popleft()
+    new_tree = grow(root)
+
+    visualize_binary_tree(new_tree)
+
+
 message = "BCCABBDDAECCBBAEDDCC"
 stats(message)
 
@@ -52,6 +98,7 @@ count_table = sorted(
 )
 
 tree = create_tree(count_table)
+# draw(tree)
 table = create_table(tree[0]["chars"], {})
 reverse_table = {table[key]: key for key in table}
 
@@ -67,10 +114,10 @@ received_message_in_bytes = []
 key = []
 while received_message:
     key.append(received_message.popleft())
-    if reverse_table.get(''.join(key)):
-        received_message_in_bytes.append(reverse_table[''.join(key)])
+    if reverse_table.get("".join(key)):
+        received_message_in_bytes.append(reverse_table["".join(key)])
         key = []
-    
+
 decoded_message = "".join(received_message_in_bytes)
 print("Message received: ", decoded_message)
 print("Is message same?: ", message == decoded_message)
